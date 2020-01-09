@@ -15,10 +15,15 @@ class myApp extends StatelessWidget {
 
 
 class appHomePage extends StatelessWidget {
-  
   @override
   appHomePage({Key key}):super(key:key);
   String pageName = "home Page";
+  _goNewRouter(context) {
+    Navigator.push(context, 
+    MaterialPageRoute(
+      builder: (context)=> newRouter()
+    ));
+  }
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
@@ -28,11 +33,21 @@ class appHomePage extends StatelessWidget {
         Center(
           child: Column(
             children: <Widget>[
-              _scrollListView( items: List.generate(500, (index)=>'this is try new widget $index'))
+              _scrollListView( items: List.generate(500, (index)=>'this is try new widget $index')),
+             
             ],
           )
         )
       ),
+      floatingActionButton:  FloatingActionButton.extended(
+                onPressed: () {
+                  _goNewRouter(context);
+        // Add your onPressed code here!
+                },
+                label: Text('Approve'),
+                icon: Icon(Icons.thumb_up),
+                backgroundColor: Colors.pink,
+              ),
     );
   }
 }
@@ -56,6 +71,43 @@ class _scrollListView extends StatelessWidget {
   }
 }
 
-class goNewGridPage extends StatelessWidget {
+class newRouter extends StatelessWidget {
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Container(
+          width: 100.0,
+          height: 100.0,
+          child:Image.asset('assets/images/text.jpg')
+        )
+      ),
+      body: _newRouterPage(),
+    );
+  }
+}
 
+class _newRouterPage extends StatelessWidget {
+  final List<Widget> infoList = [
+    Container(
+      child: Column(
+        children: <Widget>[
+          Text(
+            'this is Text orer',
+            style: TextStyle(
+              fontSize: 32.0
+            ),
+          ),
+          Text('this is Text firesr')
+        ],
+      ),
+    )
+  ];
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(32.0),
+      child: Row(
+        children: infoList,
+      ),
+    );
+  }
 }
