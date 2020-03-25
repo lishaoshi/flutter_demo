@@ -1,112 +1,53 @@
 import 'package:flutter/material.dart';
-
-void main() => runApp(myApp());
-
-
-
-class myApp extends StatelessWidget {
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: appHomePage(
-      ),
-    );
-  }
+import 'package:flutter_app/provide/cartProvide.dart';
+import 'package:flutter_app/provide/classList.dart';
+import './newFirstPage/newFirstPage.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provide/provide.dart';
+import './provide/count.dart';
+import './provide/classList.dart';
+import './provide/goods_detail_info.dart';
+import 'package:fluro/fluro.dart';
+import './config/application.dart';
+import './routers/routers.dart';
+/*
+ * flutter 项目的入口文件
+ */
+void main() {
+  
+ 
+  // Routes.configureRoutes(router);
+  var classData =  ClassData();
+   final providers = Providers()
+    ..provide(Provider.function((context) => Counter(0)))
+    ..provide(Provider.function((context) =>classData))
+    ..provide(Provider.function((context) =>DetailPagePrvide()))
+    ..provide(Provider.function((context) =>CartProvide()));
+      runApp(ProviderNode(
+        providers: providers,
+        child: MyApp(),
+      ));
 }
 
 
-class appHomePage extends StatelessWidget {
+class MyApp extends StatelessWidget {
   @override
-  appHomePage({Key key}):super(key:key);
-  String pageName = "home Page";
-  _goNewRouter(context) {
-    Navigator.push(context, 
-    MaterialPageRoute(
-      builder: (context)=> newRouter()
-    ));
-  }
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: new AppBar(
-        title: new Text('$pageName'),
-      ),
-      body: (
-        Center(
-          child: Column(
-            children: <Widget>[
-              _scrollListView( items: List.generate(500, (index)=>'this is try new widget $index')),
-             
-            ],
-          )
-        )
-      ),
-      floatingActionButton:  FloatingActionButton.extended(
-                onPressed: () {
-                  _goNewRouter(context);
-        // Add your onPressed code here!
-                },
-                label: Text('Approve'),
-                icon: Icon(Icons.thumb_up),
-                backgroundColor: Colors.pink,
-              ),
-    );
-  }
-}
-
-class _scrollListView extends StatelessWidget {
-  final List<String> items;
-  _scrollListView({Key key, @required this.items}):super(key:key);
-  Widget build(BuildContext context) {
-    return  Container(
-      height: 600.0,
-      width: 100.0,
-      child: ListView.builder(
-        itemCount: items.length,
-        itemBuilder: (context, index){
-          return ListTile(
-            title: Text('${items[index]}')
-          );
-        }
-      )
-    );
-  }
-}
-
-class newRouter extends StatelessWidget {
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Container(
-          width: 100.0,
-          height: 100.0,
-          child:Image.asset('assets/images/text.jpg')
-        )
-      ),
-      body: _newRouterPage(),
-    );
-  }
-}
-
-class _newRouterPage extends StatelessWidget {
-  final List<Widget> infoList = [
-    Container(
-      child: Column(
-        children: <Widget>[
-          Text(
-            'this is Text orer',
-            style: TextStyle(
-              fontSize: 32.0
-            ),
-          ),
-          Text('this is Text firesr')
-        ],
-      ),
-    )
-  ];
-  Widget build(BuildContext context) {
+    Router router = Router();
+    Application.router = router;
+    Routers.configureRoutes(router);
+    // ScreenUtil.init(context, width: 750, height: 1334);
     return Container(
-      padding: EdgeInsets.all(32.0),
-      child: Row(
-        children: infoList,
+      // margin: EdgeInsets.only(left: 50),
+      child: MaterialApp(
+        title: '百姓生活+',
+        home: NewPage(),
+        onGenerateRoute: Application.router.generator,
+        color: Colors.pink,
+        theme: ThemeData(
+          backgroundColor: Colors.pink,
+          primaryColor: Colors.pink
+        ),
       ),
     );
   }
