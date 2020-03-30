@@ -1,24 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/pages/bottomNavigotes/shoppingCart.dart'; 
+import 'package:flutter_app/pages/bottomNavigotes/shoppingCart.dart';
+import 'package:provide/provide.dart'; 
 import '../pages/bottomNavigotes/home_page.dart';
 import '../pages/bottomNavigotes/class_page.dart';
 import '../pages/bottomNavigotes/my_page.dart';
-import '../pages/bottomNavigotes/find_page.dart';
+// import '../pages/bottomNavigotes/find_page.dart';
+import 'package:flutter_app/provide/homeProvide.dart';
 
-class NewPage extends StatefulWidget {
-  @override
-  State<NewPage> createState() =>_NewPage();
-}
-
-class _NewPage extends State<NewPage> {
-  void _onTap(index) {
-    if(index == currenIndex) {
-      return;
-    }
-    setState(() {
-      currenIndex = index;
-    });
-  }
+class NewPage extends StatelessWidget {
+  //  void _onTap(context, index, currentIndex) {
+  //   if(index == currentIndex) {
+  //     return;
+  //   }
+  // }
   /*
   定义底部跳转状态栏
    */
@@ -47,7 +41,7 @@ class _NewPage extends State<NewPage> {
       )
     ];
     //当前页面的index
-    int currenIndex = 0;
+    // int currenIndex = 0;
     /*
      *定义要跳转的页面list 
      */
@@ -60,21 +54,30 @@ class _NewPage extends State<NewPage> {
     ];
   @override 
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        child: IndexedStack(
-          index: currenIndex,
-          children: targetPage
+    // int currentIndex = Provide.value<HomeProvide>(context).bottomIndex;
+    return Provide<HomeProvide>(builder: (context, child, val){ 
+      return Scaffold(
+        body: Container(
+          child: IndexedStack(
+            index: val.bottomIndex,
+            children: targetPage
+          ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: bottomTap,
-        currentIndex: currenIndex,
-        onTap: _onTap,
-        fixedColor: Color.fromARGB(233, 233, 188, 157),
-        unselectedItemColor: Colors.red,
-        type: BottomNavigationBarType.fixed,
-      ),
-    );
+        bottomNavigationBar: BottomNavigationBar(
+          items: bottomTap,
+          currentIndex: val.bottomIndex,
+          onTap: (int tapIndex) {
+            // _onTap(context, tapIndex, val.bottomIndex);
+            if(tapIndex == val.bottomIndex) {
+              return;
+            }
+                Provide.value<HomeProvide>(context).changeBottomIndex(tapIndex);
+
+          },
+          fixedColor: Color.fromARGB(233, 233, 188, 157),
+          unselectedItemColor: Colors.red,
+          type: BottomNavigationBarType.shifting,
+        ),
+      );});
   }
 }

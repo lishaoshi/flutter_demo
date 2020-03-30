@@ -10,6 +10,7 @@ import './provide/goods_detail_info.dart';
 import 'package:fluro/fluro.dart';
 import './config/application.dart';
 import './routers/routers.dart';
+import './provide/homeProvide.dart';
 /*
  * flutter 项目的入口文件
  */
@@ -22,7 +23,8 @@ void main() {
     ..provide(Provider.function((context) => Counter(0)))
     ..provide(Provider.function((context) =>classData))
     ..provide(Provider.function((context) =>DetailPagePrvide()))
-    ..provide(Provider.function((context) =>CartProvide()));
+    ..provide(Provider.function((context) =>CartProvide()))
+    ..provide(Provider.function((context) =>HomeProvide()));
       runApp(ProviderNode(
         providers: providers,
         child: MyApp(),
@@ -45,8 +47,14 @@ class MyApp extends StatelessWidget {
         onGenerateRoute: Application.router.generator,
         color: Colors.pink,
         theme: ThemeData(
-          backgroundColor: Colors.pink,
-          primaryColor: Colors.pink
+          // backgroundColor: Colors.pink,
+          primaryColor: Colors.pink,
+          // // primarySwatch: MaterialColor(),
+          // primaryColorLight: Colors.red,
+          // primaryColorDark: Colors.yellow,
+          // hintColor: Colors.red,
+          // cursorColor: Colors.red,
+          accentColor: Colors.pink
         ),
       ),
     );

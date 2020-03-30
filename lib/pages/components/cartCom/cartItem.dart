@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/components/checkt.dart';
@@ -35,7 +34,7 @@ class CartItem extends StatelessWidget {
         children: <Widget>[
           CheckW(flag: item.isCheck, callbacks: onChangeCheckt,),
           goodsImg(item.images),
-          goodsName(item.goodsName),
+          goodsName(context, item.goodsName),
           goodsPrice(context, item.price, item.goodsId)
         ],
       )
@@ -61,18 +60,81 @@ class CartItem extends StatelessWidget {
   }
 
   //商品名称
-  Widget goodsName( String name) {
+  Widget goodsName(BuildContext context, String name) {
     return Container(
+      // color: Colors.red,
       alignment: Alignment.topLeft,
-       width: ScreenUtil().setWidth(300),
+      width: ScreenUtil().setWidth(300),
       padding: EdgeInsets.all(10),
       // height: ScreenUtil().setHeight(120),
       // color: Colors.red,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
            Text('$name'),
+           goodsNumColltr(context)
         ]
       )
+    );
+  }
+
+  //商品数量控制器
+  Widget goodsNumColltr(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color:Colors.black26),
+        // color: Colors.red,
+      ),
+      height: ScreenUtil().setHeight(35),
+      // alignment: Alignment.center,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          InkWell(
+            onTap: () async{
+              await Provide.value<CartProvide>(context).deleteGoodsItem(item.goodsId);
+              // await Provide.value<CartProvide>(context).addCartShop(item.toJson());
+            },
+            child: Container(
+              alignment: Alignment.center,
+              child: Text(item.count>1?'-':' '),
+              width: ScreenUtil().setWidth(40),
+              decoration: BoxDecoration(
+                color: item.count > 1?Colors.white:Colors.black12,
+                border: Border(
+                  right: BorderSide(color: Colors.black12)
+                ),
+              ),
+            ),
+          ),
+          Container(
+            alignment: Alignment.center,
+            child: Text('${item.count}'),
+          color: Colors.white,
+            width: ScreenUtil().setWidth(70),
+          ),
+          InkWell(
+            onTap: () async{
+              // print('123123${item.toJson()}');
+              await Provide.value<CartProvide>(context).addCartShop(item.toJson());
+              await Provide.value<CartProvide>(context).getCartInfo();
+            },
+            child:  Container(
+            alignment: Alignment.center,
+            child: Text('+'),
+            width: ScreenUtil().setWidth(40),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border(
+                left: BorderSide(color: Colors.black12)
+              ),
+            ),
+          ),
+          ),
+         
+        ]
+      ),
     );
   }
 

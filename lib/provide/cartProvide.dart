@@ -23,6 +23,8 @@ class CartProvide extends ChangeNotifier {
     var temp = cartString==null?[]:json.decode(cartString.toString());
     // print('$item-------$cartString-----$temp');
     List<Map> tempList = (temp as List).cast();
+    // print('List $tempList');
+    cartGoodsAllLength = 0;
     bool isHave = false; //本次添加商品是否已经存在购物车数据中  false：默认没有
     int index = 0;
     tempList.forEach((items){
@@ -30,13 +32,18 @@ class CartProvide extends ChangeNotifier {
         isHave = true; //id一样，表示购物车存在
         items['count']++;
       }
+      cartGoodsAllLength+=items['count'];
       index++;
     });
+    if(tempList.isEmpty) {
+      cartGoodsAllLength++;
+    }
     if(!isHave) {
       tempList.add(item);
     }
+    
     cartString = json.encode(tempList).toString();
-    print(cartString);
+    // print(cartString);
     prefs.setString('cartInfo', cartString);
     notifyListeners();
   }
@@ -44,8 +51,10 @@ class CartProvide extends ChangeNotifier {
 
   //马上购买---当前先做清空购物车
   buyGoods({Map<String, dynamic> item}) async{
+    cartGoodsAllLength = 0;
     SharedPreferences pres = await SharedPreferences.getInstance();
     pres.clear();
+    notifyListeners();
   }
 
 
@@ -63,8 +72,8 @@ class CartProvide extends ChangeNotifier {
       List<Map> cartItemArr = (json.decode(cartString.toString()) as List).cast();
       cartItemArr.forEach((item){
         if(item['isCheck']) {
-         cartGoodsAllLength++;
-          price +=item['price'];
+         cartGoodsAllLength+=item['count'];
+          price +=item['price']*item['count'];
         }
          cartList.add(CartModel.formJson(item));
       
@@ -75,7 +84,7 @@ class CartProvide extends ChangeNotifier {
   }
 
 
-  //删除按钮
+  //点击垃圾桶删除当前商品
   deleteGoods(String id) async{
     cartGoodsAllLength = 0;
     // price = 0;
@@ -90,16 +99,34 @@ class CartProvide extends ChangeNotifier {
     tempList.forEach((item){
       if(item['goodsId'] == id) {
         deletIndex = index;
-        price -=item['price'];
-      } else {
-        cartList.add(CartModel.formJson(item));
-        cartGoodsAllLength++;
       }
       index++;
     });
     tempList.removeAt(deletIndex);
     cartString = json.encode(tempList).toString();
     pres.setString('cartInfo', cartString);
+    await getCartInfo();
+  }
+
+  //减少商品数量（点击'-'）
+  deleteGoodsItem(String id) async{
+    cartGoodsAllLength = 0;
+    // price = 0;
+    //根据id删除购物车
+    SharedPreferences pres = await SharedPreferences.getInstance();
+    cartString = pres.getString('cartInfo');
+    List<Map> tempList = (json.decode(cartString.toString()) as List).cast();
+    cartList = [];
+    tempList.forEach((item){
+      if(item['goodsId'] == id && item['count'] > 1) {
+        // deletIndex = index;
+        item['count']--;
+      }
+    });
+    // tempList.removeAt(deletIndex);
+    cartString = json.encode(tempList).toString();
+    pres.setString('cartInfo', cartString);
+    await getCartInfo();
     notifyListeners();
   }
 
