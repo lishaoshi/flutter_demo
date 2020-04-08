@@ -67,16 +67,16 @@ class NewPage extends StatelessWidget {
           items: bottomTap,
           currentIndex: val.bottomIndex,
           onTap: (int tapIndex) {
+            print(tapIndex);
             // _onTap(context, tapIndex, val.bottomIndex);
             if(tapIndex == val.bottomIndex) {
               return;
             }
-                Provide.value<HomeProvide>(context).changeBottomIndex(tapIndex);
-
+            Provide.value<HomeProvide>(context).changeBottomIndex(tapIndex);
           },
           fixedColor: Color.fromARGB(233, 233, 188, 157),
           unselectedItemColor: Colors.red,
-          type: BottomNavigationBarType.shifting,
+          type: BottomNavigationBarType.fixed,
         ),
       );});
   }

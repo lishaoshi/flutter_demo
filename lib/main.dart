@@ -43,6 +43,7 @@ class MyApp extends StatelessWidget {
       // margin: EdgeInsets.only(left: 50),
       child: MaterialApp(
         title: '百姓生活+',
+        debugShowCheckedModeBanner: false,
         home: NewPage(),
         onGenerateRoute: Application.router.generator,
         color: Colors.pink,
