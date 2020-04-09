@@ -31,6 +31,19 @@ void main() {
       ));
 }
 
+//继承NavigatorObserver
+class MyObserver extends NavigatorObserver{ 
+  @override
+  void didPush(Route route, Route previousRoute) {
+    // 当调用Navigator.push时回调
+    super.didPush(route, previousRoute);
+    //可通过route.settings获取路由相关内容
+    //route.currentResult获取返回内容
+    //....等等
+    print(route.settings.name is String);
+  }
+}
+
 
 class MyApp extends StatelessWidget {
   @override
@@ -46,6 +59,12 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         home: NewPage(),
         onGenerateRoute: Application.router.generator,
+        // onUnknownRoute: (RouteSettings settings){
+        //   print(settings);
+        // },
+        navigatorObservers: [
+          MyObserver()
+        ],
         color: Colors.pink,
         theme: ThemeData(
           // backgroundColor: Colors.pink,
